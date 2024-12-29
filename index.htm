@@ -1,72 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> time-pick.js </script></title>
-    <style>
-        body{
-            text-align: center;
-        }
 
-        .button{
-            padding: 1em;
-            border: 1px solid #DDD;
-            background-color: transparent;
-            color: darkred;
-        }
-    </style>
-</head>
-<body>
-    <H1>TimePick</H1><small>Version - 1.0</small> <br><br>
-    <i>ID based TimePick create with value</i><br><br>
-    <input type="text" id="timePick" value="08:06:04">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> time-pick.js </script>
+        </title>
+        <link rel="stylesheet" href="./time-pick.css">
+    </head>
 
-    <br><br>
-    <i>Class based TimePick create</i><br><br>
-    <input type="text" class="timePicker"/><br><br>
-    <input type="text" class="timePicker"/><br><br>
-    <input type="text" class="timePicker"/><br><br>
+    <body>
+        <div class="row">
+            <H1>TimePick</H1><small>Version - 1.1.0</small> <br><br>
+            <i>ID based TimePick create with value</i><br><br>
+            <input type="text" id="one" value="08:06" />
+            <input type="text" id="two" />
+            <input type="text" id="three" />
+        </div>
+        <div class="row">
+            <i>Class based TimePick create</i><br><br>
+            <input type="text" class="timePicker" value="12:45" />
+            <input type="text" id="testing" class="timePicker" />
+            <input type="text" class="timePicker light" />
+        </div>
 
-    <br><br>
+        <div class="row">
+            <a href="https://www.google.com/search?q=TimePick.js+time+picker+javascript" class="button"
+                target="_blank">DOWNLOAD
+                TIMEPICK</a>
+        </div>
+        <div id="logContainer"></div>
 
-    <a href="www.google.com" class="button" style="position: relative;z-index: 10;" target="_blank">DOWNLOAD TIMEPICK</a>
-    <br><br><br>
+        <br><br>
 
-    <textarea style="height: 200px; width: 40%; position: relative;z-index: 10;"> 
-    <input type="text" id="timePick" value="08:06:04">
+        <i style="position: relative;z-index: 10;">Plugin Developed By : <a href="https://katheesh.js.org"
+                target="_blank">KATHEESKUMAR <small>(https://katheesh.js.org)</small></a></i>
+        <br><br><br>
+        <i>
+            <b>Community</b>
+            <br>
+            TimePick.js is an open source project, shared under an MIT license. All code and discussions are hosted on
+            Github.
 
-    <input type="text" class="timePicker"/>
-    <input type="text" class="timePicker"/>
-    <input type="text" class="timePicker"/>
-    
-    <script src="./time-pick.js"></script>
-    <script>
-        var timepicker = new TimePick('#timePick');
-        var timepickerz = new TimePick('.timePicker');
-    </script> 
-    </textarea>
+            Contributions are very welcome – please read these pointers before submitting a bug report or feature
+            request.
 
-    <br><br>
+            If you find this library useful and would like to see further development, consider supporting it.</i>
 
-    <i style="position: relative;z-index: 10;">Plugin Developed By : <a href="https://katheesh.js.org" target="_blank">KATHEESKUMAR <small>(https://katheesh.js.org)</small></a></i>
-    <br><br><br>
-    <i> 
-        <b>Community</b>
-        <br>
-        TimePick.js is an open source project, shared under an MIT license. All code and discussions are hosted on Github.
-        
-        Contributions are very welcome – please read these pointers before submitting a bug report or feature request.
-        
-        If you find this library useful and would like to see further development, consider supporting it.</i>
-    
-    <script src="./time-pick.min.js"></script>
-    <script>
-        var timepicker = new TimePick('#timePick');
-        var timepickerz = new TimePick('.timePicker');
-    </script>
+        <script src="./time-pick.js"></script>
+        <script>
+            const logContainer = document.getElementById('logContainer');
+            logContainer.innerHTML = '';
 
+            function log(message, data) {
+                const time = new Date().toLocaleTimeString();
+                logContainer.innerHTML += `<b>[${time}] ${message}:</b> ${JSON.stringify(data, null, 2)}\n`;
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
 
-    
-</body>
+            var timepickerOne = new TimePick('#one').onChange((data) => {
+                log('SinglePicker ONE data', data);
+                log('SinglePicker ONE vars', timepickerOne.getValue());
+            });
+
+            var timepickerTwo = new TimePick('#two').onChange((data) => {
+                log('SinglePicker TWO data', data);
+                log('SinglePicker TWO vars', timepickerTwo.getValue());
+            });
+
+            var timepickerThree = new TimePick('#three').onChange((data) => {
+                log('SinglePicker THREE data', data);
+                log('SinglePicker THREE vars', timepickerThree.getValue());
+            });
+
+            const multiPicker = new TimePick('.timePicker');
+            log('MultiPicker', multiPicker.getAll());
+
+            multiPicker.instances.forEach((instance, id) => {
+                log(`MultiPicker ${id}`, instance.getValue());
+            });
+
+            multiPicker.onChange((instance) => {
+                log('MultiPicker data', instance);
+            });
+
+            log('MultiPicker: getValue("testing")', multiPicker.getValue('testing'));
+
+            // Instance logs
+            log('SinglePicker ONE', timepickerOne.getValue());
+            log('SinglePicker TWO', timepickerTwo.getValue());
+            log('SinglePicker THREE', timepickerThree.getValue())
+        </script>
+    </body>
+
 </html>

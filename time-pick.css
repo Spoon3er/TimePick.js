@@ -1,0 +1,116 @@
+/* Light mode (default) */
+:root {
+    color-scheme: light dark;
+    --bs-primary: #000;
+    --bs-body-bg: #fff;
+    --bs-secondary: #6c757d;
+    --bs-secondary-bg: #f8f9fa;
+    --bs-danger: #c50014;
+    --bs-gray-100: #f8f9fa;
+    --bs-gray-500: #383c3f;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bs-primary: #fff;
+        --bs-body-bg: #212529;
+        --bs-secondary: #6c757d;
+        --bs-secondary-bg: #343a40;
+        --bs-danger: #ff0019;
+        --bs-gray-100: #1c1e22;
+        --bs-gray-500: #adb5bd;
+    }
+}
+
+body {
+    text-align: center;
+    background-color: var(--bs-body-bg);
+}
+
+.button {
+    margin-top: 2rem;
+    padding: 1em;
+    border: 1px solid #DDD;
+    background-color: transparent;
+    color: var(--bs-danger);
+}
+
+div.row {
+    margin-bottom: 3rem;
+}
+
+#logContainer {
+    padding: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--bs-gray-500);
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-gray-500);
+    width: 90%;
+    max-width: 800px;
+    height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    resize: vertical;
+    margin: 0 auto;
+    text-align: left;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+input {
+    padding: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--bs-gray-500);
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-gray-500);
+    font-size: larger;
+    max-width: 80px;
+}
+
+.TimePick_BTN {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    margin-left: -35px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.TimePick_POPUP {
+    position: absolute;
+    height: 80px;
+    width: 100px;
+    background-color: var(--bs-secondary-bg);
+    border-radius: 3px;
+    border: 1px solid var(--bs-gray-500);
+    color: var(--bs-gray-500);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    z-index: 500;
+    margin-left: -73px;
+    margin-top: 9px;
+    display: none;
+}
+
+svg {
+    stroke: var(--bs-primary);
+}
+
+.label {
+    font-size: 20px;
+}
+
+.hour,
+.minute,
+.second,
+.ok {
+    display: flex;
+    flex-direction: column;
+    width: 35px;
+}
