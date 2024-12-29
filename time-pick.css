@@ -1,6 +1,9 @@
 /* Light mode (default) */
 :root {
     color-scheme: light dark;
+}
+
+.theme-light {
     --bs-primary: #000;
     --bs-body-bg: #fff;
     --bs-secondary: #6c757d;
@@ -21,6 +24,16 @@
         --bs-gray-100: #1c1e22;
         --bs-gray-500: #adb5bd;
     }
+}
+
+.theme-dark {
+    --bs-primary: #fff;
+    --bs-body-bg: #212529;
+    --bs-secondary: #6c757d;
+    --bs-secondary-bg: #343a40;
+    --bs-danger: #ff0019;
+    --bs-gray-100: #1c1e22;
+    --bs-gray-500: #adb5bd;
 }
 
 body {
