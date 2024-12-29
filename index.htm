@@ -58,19 +58,40 @@
                 logContainer.scrollTop = logContainer.scrollHeight;
             }
 
-            var timepickerOne = new TimePick('#one').onChange((data) => {
+            var timepickerOne = new TimePick('#one');
+            timepickerOne.on('change', (data) => {
                 log('SinglePicker ONE data', data);
                 log('SinglePicker ONE vars', timepickerOne.getValue());
             });
+            timepickerOne.on('dismiss', (data) => {
+                log('SinglePicker ONE dismiss', data);
+            });
+            timepickerOne.on('show', (data) => {
+                log('SinglePicker ONE show', data);
+            });
 
-            var timepickerTwo = new TimePick('#two').onChange((data) => {
+            var timepickerTwo = new TimePick('#two');
+            timepickerTwo.on('change', (data) => {
                 log('SinglePicker TWO data', data);
                 log('SinglePicker TWO vars', timepickerTwo.getValue());
             });
+            timepickerTwo.on('dismiss', (data) => {
+                log('SinglePicker TWO dismiss', data);
+            });
+            timepickerTwo.on('show', (data) => {
+                log('SinglePicker TWO show', data);
+            });
 
-            var timepickerThree = new TimePick('#three').onChange((data) => {
+            var timepickerThree = new TimePick('#three');
+            timepickerThree.on('change', (data) => {
                 log('SinglePicker THREE data', data);
                 log('SinglePicker THREE vars', timepickerThree.getValue());
+            });
+            timepickerThree.on('dismiss', (data) => {
+                log('SinglePicker THREE dismiss', data);
+            });
+            timepickerThree.on('show', (data) => {
+                log('SinglePicker THREE show', data);
             });
 
             const multiPicker = new TimePick('.timePicker');
@@ -80,8 +101,14 @@
                 log(`MultiPicker ${id}`, instance.getValue());
             });
 
-            multiPicker.onChange((instance) => {
+            multiPicker.on('change', (instance) => {
                 log('MultiPicker data', instance);
+            });
+            multiPicker.on('dismiss', (instance) => {
+                log('MultiPicker dismiss', instance);
+            });
+            multiPicker.on('show', (instance) => {
+                log('MultiPicker show', instance);
             });
 
             log('MultiPicker: getValue("testing")', multiPicker.getValue('testing'));
