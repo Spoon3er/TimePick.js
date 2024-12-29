@@ -109,7 +109,7 @@ var TimePick = (function () {
                 btn.classList.toggle("active");
                 let popup = document.getElementById("popup_" + instance.id);
                 popup.style.display = popup.style.display === "flex" ? "none" : "flex";
-                addOverlayListener(popup);
+                addOverlayListener(popup, btn);
                 handleTimeUpdate();
             };
         }
@@ -159,17 +159,13 @@ var TimePick = (function () {
         }
 
         // Hide TimePick_POPUP on outside click
-        function addOverlayListener(popup) {
+        function addOverlayListener(popup, btn) {
             if (popup.hasAttribute('overlayDissmiss')) return;
             popup.setAttribute('overlayDissmiss', true);
 
             document.addEventListener('click', function (e) {
                 if (!popup?.style.display === "flex") return;
-
-                const isClickedOnControl = e.target.matches('.svg-arrow, .timepick-icon');
-                const isClickedOnInstance = instance.id === e.target.id;
-
-                if (isClickedOnControl || isClickedOnInstance) return;
+                if (popup.contains(e.target) || btn.id === e.target.id) return;
 
                 popup.style.display = "none";
                 btn.classList.remove("active");
