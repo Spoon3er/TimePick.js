@@ -97,6 +97,7 @@ var TimePick = (function () {
 
 
         instance.elements = document.querySelectorAll(selector);
+        console.log(instance.elements);
 
         // only handle the first matching element
         let inputElement = instance.elements[0];
@@ -119,32 +120,33 @@ var TimePick = (function () {
         let adjustButtons = document.querySelectorAll(`[TimePick="input-${instance.id}"] + .TimePick_BTN .adjustbtn`);
         adjustButtons.forEach(button => {
             button.onclick = () => {
-                let data = JSON.parse(button.getAttribute("data"));
+                const data = JSON.parse(button.getAttribute("data"));
+                if (!data.type || !data.action) return;
 
-                if (data.type == 'hour' && data.action == 'up') {
-                    instance.hour = (instance.hour + 1) % 24;
-                    handleTimeUpdate();
-                }
-                if (data.type == 'hour' && data.action == 'down') {
-                    instance.hour = (instance.hour - 1 + 24) % 24;
-                    handleTimeUpdate();
-                }
-                if (data.type == 'minute' && data.action == 'up') {
-                    instance.minute = instance.minute + config.step;
-                    if (instance.minute >= 60) {
-                        instance.minute = 0;
+                switch (`${data.type}_${data.action}`) {
+                    case 'hour_up':
                         instance.hour = (instance.hour + 1) % 24;
-                    }
-                    handleTimeUpdate();
-                }
-                if (data.type == 'minute' && data.action == 'down') {
-                    instance.minute = instance.minute - config.step;
-                    if (instance.minute < 0) {
-                        instance.minute = 60 - config.step;
+                        break;
+                    case 'hour_down':
                         instance.hour = (instance.hour - 1 + 24) % 24;
-                    }
-                    handleTimeUpdate();
+                        break;
+                    case 'minute_up':
+                        instance.minute = instance.minute + config.step;
+                        if (instance.minute >= 60) {
+                            instance.minute = 0;
+                            instance.hour = (instance.hour + 1) % 24;
+                        }
+                        break;
+                    case 'minute_down':
+                        instance.minute = instance.minute - config.step;
+                        if (instance.minute < 0) {
+                            instance.minute = 60 - config.step;
+                            instance.hour = (instance.hour - 1 + 24) % 24;
+                        }
+                        break;
                 }
+
+                handleTimeUpdate();
 
             };
         });
@@ -154,7 +156,7 @@ var TimePick = (function () {
             let [hour, minute] = inputElement.value.split(":").map(Number);
             instance.hour = hour;
             instance.minute = minute;
-            handleTimeUpdate();
+            handleTimeUpdate(true);
         } else {
             inputElement.setAttribute("value", config.placeholder);
         }
@@ -165,7 +167,7 @@ var TimePick = (function () {
             popup.setAttribute('overlayDissmiss', true);
 
             document.addEventListener('click', function (e) {
-                if (!popup?.style.display === "flex") return;
+                if (popup?.style.display !== "flex") return;
                 if (popup.contains(e.target) || btn.id === e.target.id) return;
 
                 popup.style.display = "none";
@@ -185,8 +187,14 @@ var TimePick = (function () {
             return result;
         }
 
+        function getTheme(element) {
+            if (element.classList.contains("theme-dark")) return "theme-dark";
+            if (element.classList.contains("theme-light")) return "theme-light";
+            return "";
+        }
+
         function getButtonHTML(id) {
-            const theme = (inputElement.classList.contains("theme-dark")) ? "theme-dark" : (inputElement.classList.contains("theme-light")) ? "theme-light" : "";
+            const theme = getTheme(inputElement);
 
             return `<button class="TimePick_BTN TimePick_${id} ${theme}">
             <svg class="TimePick_ICON ${theme}" id="${id}" height="20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path class="timepick-icon ${theme}" d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path class="timepick-icon ${theme}" d="M15.71 15.18L12.61 13.33C12.07 13.01 11.63 12.24 11.63 11.61V7.51001" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
@@ -219,13 +227,15 @@ var TimePick = (function () {
             return { type: 'element', value: selector };
         }
 
-        function handleTimeUpdate() {
+        function handleTimeUpdate(existingValue = false) {
             let hrview = instance.hour.toString().padStart(2, '0');
             let mnview = instance.minute.toString().padStart(2, '0');
 
-            document.getElementById('label_hour_' + instance.id).innerText = hrview;
-            document.getElementById('label_minute_' + instance.id).innerText = mnview;
-            inputElement.value = hrview + ":" + mnview;
+            if (!existingValue) {
+                document.getElementById('label_hour_' + instance.id).innerText = hrview;
+                document.getElementById('label_minute_' + instance.id).innerText = mnview;
+                inputElement.value = hrview + ":" + mnview;
+            }
 
             instance.totalMinutes = (instance.hour * 60) + instance.minute;
             instance.buttonActive = btn.classList.contains("active");
