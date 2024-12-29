@@ -58,17 +58,17 @@
                 logContainer.scrollTop = logContainer.scrollHeight;
             }
 
-            var timepickerOne = new TimePick('#one').onChange((data) => {
+            var timepickerOne = new TimePick('#one').on('change', (data) => {
                 log('SinglePicker ONE data', data);
                 log('SinglePicker ONE vars', timepickerOne.getValue());
             });
 
-            var timepickerTwo = new TimePick('#two').onChange((data) => {
+            var timepickerTwo = new TimePick('#two').on('change', (data) => {
                 log('SinglePicker TWO data', data);
                 log('SinglePicker TWO vars', timepickerTwo.getValue());
             });
 
-            var timepickerThree = new TimePick('#three').onChange((data) => {
+            var timepickerThree = new TimePick('#three').on('change', (data) => {
                 log('SinglePicker THREE data', data);
                 log('SinglePicker THREE vars', timepickerThree.getValue());
             });
@@ -80,7 +80,7 @@
                 log(`MultiPicker ${id}`, instance.getValue());
             });
 
-            multiPicker.onChange((instance) => {
+            multiPicker.on('change', (instance) => {
                 log('MultiPicker data', instance);
             });
 
