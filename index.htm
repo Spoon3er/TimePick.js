@@ -58,7 +58,7 @@
                 logContainer.scrollTop = logContainer.scrollHeight;
             }
 
-            var timepickerOne = new TimePick('#one').onChange((data) => {
+            var timepickerOne = new TimePick('#one', { step: 1.5 }).onChange((data) => {
                 log('SinglePicker ONE data', data);
                 log('SinglePicker ONE vars', timepickerOne.getValue());
             });

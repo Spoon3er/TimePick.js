@@ -22,6 +22,7 @@
  * 
  * // 3. Advanced Usage Examples
  * const picker = new TimePick('#timeInput', {step:15});  // 15-minute intervals
+ * const picker = new TimePick('#timeInput', {placeholder: 'Select Time'});  // Custom placeholder
  * 
  * // Validation with time ranges
  * picker.onChange(({totalMinutes}) => {
@@ -30,20 +31,21 @@
  * });
  * 
  * // Get/Set Time Values
- * const time = picker.getVars();  // { hour: 14, minute: 30, totalMinutes: 870 }
+ * const time = picker.getValue();  // { hour: 14, minute: 30, totalMinutes: 870 }
  * picker.setValue(870);           // Sets to 14:30
  * 
- * @style
- * add class theme-dark or theme-light to the input element for dark/light theme
+ * @style {CSS} - Add 'theme-dark' or 'theme-light' class to your input element 
+ *  for dark/light theme. Leave blank for system prefers-color-scheme.
  * 
  * @param {string} element - CSS selector for the input element
  * @param {number} [step=30] - Step interval in minutes (default: 30)
+ * @param {string} [placeholder='00:00'] - Placeholder text for the input
  * 
  * @property {number} hour - Selected hour (0-23)
  * @property {number} minute - Selected minute (0-59)
  * @property {number} totalMinutes - Total minutes since midnight
  * 
- * @method getVars() - Returns {hour, minute, totalMinutes}
+ * @method getValue() - Returns {hour, minute, totalMinutes}
  * @method onChange(callback) - Register change event handler
  * @method setValue(totalMinutes) - Set time programmatically
  * @method setValid(isValid) - Set validity state
@@ -59,8 +61,18 @@ var TimePick = (function () {
 
 
     var Constructor = function (selector, options) {
-        const { type, value } = isInstanceInput(selector);
 
+        if (options?.step) {
+            const step = parseInt(options.step);
+            if (isNaN(step) || step < 1 || step > 60) {
+                console.warn(`TimePick: step must be between 1 and 60, using default value (${DEFAULT_OPTIONS.step})`);
+                options.step = DEFAULT_OPTIONS.step;
+            } else {
+                options.step = step;
+            }
+        }
+
+        const { type, value } = isInstanceInput(selector);
         if (type === 'class') {
             const elements = document.querySelectorAll(`.${value}`);
             const instances = new Map();
