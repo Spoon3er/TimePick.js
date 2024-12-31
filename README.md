@@ -1,7 +1,7 @@
 # TimePick  
 The minimal and lightweight Vanilla JS time input picker.
 
-<img src=="https://github.com/Spoon3er/TimePick.js/blob/master/Screenshot.png?raw=true" />
+<img src="https://github.com/Spoon3er/TimePick.js/blob/master/Screenshot.png?raw=true" />
 
 #### To get it:
 
