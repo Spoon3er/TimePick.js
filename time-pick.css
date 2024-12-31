@@ -168,5 +168,5 @@ svg:hover {
 
 .invalid {
     color: var(--bs-danger);
-    text-decoration: overline;
+    text-decoration: line-through;
 }

@@ -269,13 +269,12 @@ var TimePick = (function () {
                 instance.minute = totalMinutes % 60;
                 handleTimeUpdate();
             },
-            setValid: function (isValid) {
-                let button = document.getElementById('adProgramm');
+            setValid: function (isValid, button = false) {
 
-                if (!inputElement || !button) return;
+                if (!inputElement) return;
 
                 inputElement.classList.toggle('invalid', !isValid);
-                button.disabled = !isValid;
+                if (button) button.disabled = !isValid;
             },
         };
 
