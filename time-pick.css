@@ -119,6 +119,26 @@ input {
     display: none;
 }
 
+.TimePick_POPUP.position-bottom {
+    margin-left: -73px;
+    margin-top: 9px;
+}
+
+.TimePick_POPUP.position-top {
+    margin-left: -73px;
+    margin-top: -114px;
+}
+
+.TimePick_POPUP.position-left {
+    margin-left: -174px;
+    margin-top: -34px;
+}
+
+.TimePick_POPUP.position-right {
+    margin-left: 28px;
+    margin-top: -34px;
+}
+
 svg {
     stroke: var(--bs-gray-500);
 }
@@ -144,4 +164,9 @@ svg:hover {
     flex-direction: column;
     width: 35px;
     margin: 5px 0;
+}
+
+.invalid {
+    color: var(--bs-danger);
+    text-decoration: overline;
 }

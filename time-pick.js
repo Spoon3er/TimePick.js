@@ -87,10 +87,10 @@ var TimePick = (function () {
                 onChange: (callback) => {
                     instances.forEach(instance => instance.onChange(callback));
                 },
-                getAll: () => instances,
-                getValue: (id) => instances.get(id)?.getValue(),
-                setValue: (id, totalMinutes) => instances.get(id)?.setValue(totalMinutes),
-                setValid: (id, isValid) => instances.get(id)?.setValid(isValid)
+                getIds: () => Array.from(instances.keys()),
+                getValue: (elementId) => instances.get(elementId)?.getValue(),
+                setValue: (elementId, totalMinutes) => instances.get(elementId)?.setValue(totalMinutes),
+                setValid: (elementId, isValid) => instances.get(elementId)?.setValid(isValid)
             };
         }
 
@@ -101,18 +101,14 @@ var TimePick = (function () {
         var instance = {
             hour: 0,
             minute: 0,
-            totalMinutes: 0,
+            totalMinutes: null,
             buttonActive: false,
-            elements: null,
+            elementId: null,
             id: randomString(5)
         };
 
 
-        instance.elements = document.querySelectorAll(selector);
-        console.log(instance.elements);
-
-        // only handle the first matching element
-        let inputElement = instance.elements[0];
+        let inputElement = document.querySelectorAll(selector)[0];
         inputElement.setAttribute("TimePick", "input-" + instance.id);
         inputElement.insertAdjacentHTML("afterend", getButtonHTML(instance.id));
 
@@ -251,17 +247,11 @@ var TimePick = (function () {
 
             instance.totalMinutes = (instance.hour * 60) + instance.minute;
             instance.buttonActive = btn.classList.contains("active");
+            instance.elementId = inputElement.id;
 
             // Call callback if set
             if (instanceCallback) {
-                instanceCallback({
-                    hour: hrview,
-                    minute: mnview,
-                    value: hrview + ":" + mnview,
-                    totalMinutes: instance.totalMinutes,
-                    buttonActive: instance.buttonActive,
-                    instanceId: instance.id
-                });
+                instanceCallback({ ...instance });
             }
         }
 

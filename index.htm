@@ -74,7 +74,8 @@
             });
 
             const multiPicker = new TimePick('.timePicker');
-            log('MultiPicker', multiPicker.getAll());
+            const multiPickerIds = multiPicker.getIds();
+            log('MultiPicker', multiPickerIds);
 
             multiPicker.instances.forEach((instance, id) => {
                 log(`MultiPicker ${id}`, instance.getValue());
@@ -84,7 +85,7 @@
                 log('MultiPicker data', instance);
             });
 
-            log('MultiPicker: getValue("testing")', multiPicker.getValue('testing'));
+            log('MultiPicker: getValue(multiPickerIds[0])', multiPicker.getValue(multiPickerIds[0]));
 
             // Instance logs
             log('SinglePicker ONE', timepickerOne.getValue());
