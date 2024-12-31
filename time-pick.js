@@ -35,11 +35,14 @@
  * picker.setValue(870);           // Sets to 14:30
  * 
  * @style {CSS} - Add 'theme-dark' or 'theme-light' class to your input element 
- *  for dark/light theme. Leave blank for system prefers-color-scheme.
+ *               for dark/light theme. Leave blank for system prefers-color-scheme.
  * 
  * @param {string} element - CSS selector for the input element
- * @param {number} [step=30] - Step interval in minutes (default: 30)
- * @param {string} [placeholder='00:00'] - Placeholder text for the input
+ * @param {Object} [options] - Configuration options
+ * @param {number} [options.step=30] - Time interval in minutes between selectable times (1-60)
+ * @param {string} [options.placeholder='00:00'] - Default text shown when no time is selected
+ * @param {string} [options.position='bottom'] - Position of the time picker popup relative to input
+ *                                              ('top'|'bottom'|'left'|'right')
  * 
  * @property {number} hour - Selected hour (0-23)
  * @property {number} minute - Selected minute (0-59)
@@ -57,6 +60,7 @@ var TimePick = (function () {
     const DEFAULT_OPTIONS = {
         step: 30,
         placeholder: '00:00',
+        position: 'bottom',
     };
 
 
@@ -87,10 +91,18 @@ var TimePick = (function () {
                 onChange: (callback) => {
                     instances.forEach(instance => instance.onChange(callback));
                 },
-                getAll: () => instances,
-                getValue: (id) => instances.get(id)?.getValue(),
-                setValue: (id, totalMinutes) => instances.get(id)?.setValue(totalMinutes),
-                setValid: (id, isValid) => instances.get(id)?.setValid(isValid)
+                getElementIds: () => Array.from(instances.keys()),
+                getValue: (elementId) => instances.get(elementId)?.getValue(),
+                setValue: (elementId, totalMinutes) => instances.get(elementId)?.setValue(totalMinutes),
+                setValid: (elementId, isValid) => instances.get(elementId)?.setValid(isValid),
+                setOption: function (elementId, newOptions) {
+                    if (elementId === '*') {
+                        instances.forEach(instance => instance.setOption(newOptions));
+                    } else {
+                        instances.get(elementId)?.setOption(newOptions);
+                    }
+                    return this;
+                },
             };
         }
 
@@ -101,18 +113,19 @@ var TimePick = (function () {
         var instance = {
             hour: 0,
             minute: 0,
-            totalMinutes: 0,
+            totalMinutes: null,
             buttonActive: false,
-            elements: null,
-            id: randomString(5)
+            elementId: null,
+            id: randomString(5),
+            config: config  // Add config to instance
         };
 
 
-        instance.elements = document.querySelectorAll(selector);
-        console.log(instance.elements);
-
-        // only handle the first matching element
-        let inputElement = instance.elements[0];
+        let inputElement = document.querySelectorAll(selector)[0];
+        if (!inputElement) {
+            console.error(`TimePick: Element not found for selector '${selector}'`);
+            return;
+        }
         inputElement.setAttribute("TimePick", "input-" + instance.id);
         inputElement.insertAdjacentHTML("afterend", getButtonHTML(instance.id));
 
@@ -143,16 +156,16 @@ var TimePick = (function () {
                         instance.hour = (instance.hour - 1 + 24) % 24;
                         break;
                     case 'minute_up':
-                        instance.minute = instance.minute + config.step;
+                        instance.minute = instance.minute + instance.config.step;
                         if (instance.minute >= 60) {
                             instance.minute = 0;
                             instance.hour = (instance.hour + 1) % 24;
                         }
                         break;
                     case 'minute_down':
-                        instance.minute = instance.minute - config.step;
+                        instance.minute = instance.minute - instance.config.step;
                         if (instance.minute < 0) {
-                            instance.minute = 60 - config.step;
+                            instance.minute = 60 - instance.config.step;
                             instance.hour = (instance.hour - 1 + 24) % 24;
                         }
                         break;
@@ -207,10 +220,11 @@ var TimePick = (function () {
 
         function getButtonHTML(id) {
             const theme = getTheme(inputElement);
+            const position = options?.position || DEFAULT_OPTIONS.position;
 
             return `<button class="TimePick_BTN TimePick_${id} ${theme}">
             <svg class="TimePick_ICON ${theme}" id="${id}" height="20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path class="timepick-icon ${theme}" d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path class="timepick-icon ${theme}" d="M15.71 15.18L12.61 13.33C12.07 13.01 11.63 12.24 11.63 11.61V7.51001" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
-            <div class="TimePick_POPUP ${theme}" id="popup_${id}">
+            <div class="TimePick_POPUP ${theme} position-${position}" id="popup_${id}">
             <div class="hour ${theme}">
             <div class="adjustbtn uparrow ${theme}" data='{"type": "hour", "action": "up"}'><svg class="svg-arrow ${theme}" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/2000/xlink" viewBox="-30.7 -30.7 573.13 573.13" xml:space="preserve"  stroke-width="30"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path class="timepick-icon ${theme}" d="M508.788,371.087L263.455,125.753c-4.16-4.16-10.88-4.16-15.04,0L2.975,371.087c-4.053,4.267-3.947,10.987,0.213,15.04 c4.16,3.947,10.667,3.947,14.827,0l237.867-237.76l237.76,237.76c4.267,4.053,10.987,3.947,15.04-0.213 C512.734,381.753,512.734,375.247,508.788,371.087z"></path> </g> </g> </g></svg></div>
             <div id="label_hour_${id}" class="label ${theme}">00</div>
@@ -249,22 +263,42 @@ var TimePick = (function () {
                 inputElement.value = hrview + ":" + mnview;
             }
 
+            instance.elementId = inputElement.id;
             instance.totalMinutes = (instance.hour * 60) + instance.minute;
             instance.buttonActive = btn.classList.contains("active");
 
             // Call callback if set
             if (instanceCallback) {
-                instanceCallback({
-                    hour: hrview,
-                    minute: mnview,
-                    value: hrview + ":" + mnview,
-                    totalMinutes: instance.totalMinutes,
-                    buttonActive: instance.buttonActive,
-                    instanceId: instance.id
-                });
+                instanceCallback({ ...instance });
             }
         }
 
+        function handleOptionUpdate(newOptions) {
+            const oldConfig = { ...instance.config };
+            instance.config = { ...instance.config, ...newOptions };
+
+            // Validate step option if changed
+            if (newOptions.step) {
+                const step = parseInt(newOptions.step);
+                if (isNaN(step) || step < 1 || step > 60) {
+                    console.warn(`TimePick: step must be between 1 and 60, keeping previous value (${oldConfig.step})`);
+                    instance.config.step = oldConfig.step;
+                }
+            }
+
+            // Update UI if position changed
+            if (newOptions.position) {
+                const popup = document.getElementById("popup_" + instance.id);
+                if (popup) {
+                    popup.className = popup.className.replace(/position-\w+/, `position-${instance.config.position}`);
+                }
+            }
+
+            // Update placeholder if changed
+            if (newOptions.placeholder && instance.totalMinutes === null) {
+                inputElement.setAttribute("value", instance.config.placeholder);
+            }
+        }
 
         var api = {
             onChange: function (callback) {
@@ -286,6 +320,10 @@ var TimePick = (function () {
 
                 inputElement.classList.toggle('invalid', !isValid);
                 button.disabled = !isValid;
+            },
+            setOption: function (newOptions) {
+                handleOptionUpdate(newOptions);
+                return this;
             },
         };
 

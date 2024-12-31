@@ -58,38 +58,49 @@
                 logContainer.scrollTop = logContainer.scrollHeight;
             }
 
-            var timepickerOne = new TimePick('#one', { step: 1.5 }).onChange((data) => {
+            const timepickerOne = new TimePick('#one', { step: 1.5, position: 'left' }).onChange((data) => {
                 log('SinglePicker ONE data', data);
                 log('SinglePicker ONE vars', timepickerOne.getValue());
             });
 
-            var timepickerTwo = new TimePick('#two').onChange((data) => {
+            const timepickerTwo = new TimePick('#two', { position: 'top' }).onChange((data) => {
                 log('SinglePicker TWO data', data);
                 log('SinglePicker TWO vars', timepickerTwo.getValue());
             });
 
-            var timepickerThree = new TimePick('#three').onChange((data) => {
+            const timepickerThree = new TimePick('#three', { position: 'right' }).onChange((data) => {
                 log('SinglePicker THREE data', data);
                 log('SinglePicker THREE vars', timepickerThree.getValue());
             });
 
             const multiPicker = new TimePick('.timePicker');
-            log('MultiPicker', multiPicker.getAll());
+            const allPickerIds = multiPicker.getElementIds();
+            log('Multipicer.getElementIds()', allPickerIds)
 
             multiPicker.instances.forEach((instance, id) => {
                 log(`MultiPicker ${id}`, instance.getValue());
             });
 
-            multiPicker.onChange((instance) => {
-                log('MultiPicker data', instance);
+            multiPicker.onChange((picker) => {
+                log('MultiPicker data', picker);
+                log('MultiPicker vars', multiPicker.getValue(picker.elementId));
             });
-
-            log('MultiPicker: getValue("testing")', multiPicker.getValue('testing'));
 
             // Instance logs
             log('SinglePicker ONE', timepickerOne.getValue());
             log('SinglePicker TWO', timepickerTwo.getValue());
             log('SinglePicker THREE', timepickerThree.getValue())
+
+            // timepickerOne.setOption({ position: 'top' });
+            timepickerThree.setOption({ step: 15, placeholder: '--:--' });
+
+            //////////////////////////////////////////////////////////////////
+            // multiPicker.setOption('*', { position: 'top' });
+
+            // Set options for specific instance
+            multiPicker.setOption('timePicker_0', { step: 15 });
+            multiPicker.setOption(allPickerIds[2], { step: 5 });
+
         </script>
     </body>
 
