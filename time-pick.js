@@ -57,20 +57,13 @@ var TimePick = (function () {
     const DEFAULT_OPTIONS = {
         step: 30,
         placeholder: '00:00',
+        autohide: true,
     };
 
 
     var Constructor = function (selector, options) {
+        const config = validateOptions(options);
 
-        if (options?.step) {
-            const step = parseInt(options.step);
-            if (isNaN(step) || step < 1 || step > 60) {
-                console.warn(`TimePick: step must be between 1 and 60, using default value (${DEFAULT_OPTIONS.step})`);
-                options.step = DEFAULT_OPTIONS.step;
-            } else {
-                options.step = step;
-            }
-        }
 
         const { type, value } = isInstanceInput(selector);
         if (type === 'class') {
@@ -79,7 +72,7 @@ var TimePick = (function () {
 
             elements.forEach((el, index) => {
                 if (!el.id) el.id = `timePicker_${index}`;
-                instances.set(el.id, new Constructor(`#${el.id}`, options));
+                instances.set(el.id, new Constructor(`#${el.id}`, config));
             });
 
             return {
@@ -95,7 +88,6 @@ var TimePick = (function () {
         }
 
 
-        const config = { ...DEFAULT_OPTIONS, ...options };
 
         // instance variables for each TimePick instance
         var instance = {
@@ -119,7 +111,7 @@ var TimePick = (function () {
                 btn.classList.toggle("active");
                 let popup = document.getElementById("popup_" + instance.id);
                 popup.style.display = popup.style.display === "flex" ? "none" : "flex";
-                addOverlayListener(popup, btn);
+                if (config.autohide) addOverlayListener(popup, btn);
                 handleTimeUpdate();
             };
         }
@@ -168,6 +160,30 @@ var TimePick = (function () {
         } else {
             inputElement.setAttribute("value", config.placeholder);
         }
+
+        function validateOptions(options = {}) {
+            const validatedOptions = { ...DEFAULT_OPTIONS };
+
+            if (options.step) {
+                const step = parseInt(options.step);
+                if (!isNaN(step) && step >= 1 && step <= 60) {
+                    validatedOptions.step = step;
+                } else {
+                    console.warn(`TimePick: step must be between 1 and 60, using default value (${DEFAULT_OPTIONS.step})`);
+                }
+            }
+
+            if (typeof options.autohide === 'boolean') {
+                validatedOptions.autohide = options.autohide;
+            }
+
+
+            if (typeof options.placeholder === 'string') {
+                validatedOptions.placeholder = options.placeholder;
+            }
+
+            return validatedOptions;
+        };
 
         // Hide TimePick_POPUP on outside click
         function addOverlayListener(popup, btn) {
