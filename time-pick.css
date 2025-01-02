@@ -1,50 +1,39 @@
 /* Light mode (default) */
 :root {
     color-scheme: light dark;
-    --bs-popup-font-size: 20px;
-    --bs-code-color: #e685b5;
-    --bs-danger: #dc3545;
-    --bs-gray-600: #6c757d;
-    --bs-gray-500: #adb5bd;
 }
 
 .theme-light {
-    --bs-body-color: #212529;
-    --bs-body-color-rgb: 33, 37, 41;
+    --bs-primary: #000;
     --bs-body-bg: #fff;
-    --bs-emphasis-color: #000;
-    --bs-secondary-color: rgba(33, 37, 41, 0.75);
-    --bs-secondary-bg: #e9ecef;
-    --bs-secondary-text-emphasis: #2b2f32;
-    --bs-border-color: #dee2e6;
-    --bs-dark-text-emphasis: #495057;
+    --bs-secondary: #6c757d;
+    --bs-secondary-bg: #f8f9fa;
+    --bs-danger: #c50014;
+    --bs-gray-100: #f8f9fa;
+    --bs-gray-500: #383c3f;
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
     :root {
-        --bs-body-color: var(--bs-grey-600);
-        --bs-body-color-rgb: 222, 226, 230;
+        --bs-primary: #fff;
         --bs-body-bg: #212529;
-        --bs-emphasis-color: #fff;
-        --bs-secondary-color: rgba(222, 226, 230, 0.75);
+        --bs-secondary: #6c757d;
         --bs-secondary-bg: #343a40;
-        --bs-secondary-text-emphasis: #a7acb1;
-        --bs-dark-text-emphasis: #dee2e6;
-        --bs-border-color: #495057;
+        --bs-danger: #ff0019;
+        --bs-gray-100: #1c1e22;
+        --bs-gray-500: #adb5bd;
     }
 }
 
 .theme-dark {
-    --bs-body-color: var(--bs-gray-600);
-    --bs-body-color-rgb: 222, 226, 230;
+    --bs-primary: #fff;
     --bs-body-bg: #212529;
-    --bs-emphasis-color: #fff;
-    --bs-secondary-color: rgba(222, 226, 230, 0.75);
+    --bs-secondary: #6c757d;
     --bs-secondary-bg: #343a40;
-    --bs-secondary-text-emphasis: #a7acb1;
-    --bs-dark-text-emphasis: #dee2e6;
-    --bs-border-color: #495057;
+    --bs-danger: #ff0019;
+    --bs-gray-100: #1c1e22;
+    --bs-gray-500: #adb5bd;
 }
 
 body {
@@ -70,7 +59,7 @@ div.row {
     border-style: solid;
     border-color: var(--bs-gray-500);
     background-color: var(--bs-secondary-bg);
-    color: var(--bs-body-color);
+    color: var(--bs-gray-500);
     width: 90%;
     max-width: 800px;
     height: 300px;
@@ -86,9 +75,11 @@ div.row {
 
 input {
     padding: 10px;
-    border: 1px solid var(--bs-gray-500);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--bs-gray-500);
     background-color: var(--bs-secondary-bg);
-    color: var(--bs-dark-text-emphasis);
+    color: var(--bs-gray-500);
     font-size: larger;
     max-width: 80px;
 }
@@ -104,56 +95,28 @@ input {
 
 .TimePick_POPUP {
     position: absolute;
+    height: 80px;
     width: 100px;
     background-color: var(--bs-secondary-bg);
     border-radius: 3px;
     border: 1px solid var(--bs-gray-500);
-    color: var(--bs-dark-text-emphasis);
+    color: var(--bs-gray-500);
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: rgba(var(--bs-body-color-rgb), 0.05) 0px 4px 16px, rgba(var(--bs-body-color-rgb), 0.05) 0px 8px 32px;
+    box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
     z-index: 500;
     margin-left: -73px;
     margin-top: 9px;
     display: none;
 }
 
-.TimePick_POPUP.position-bottom {
-    margin-left: -73px;
-    margin-top: 9px;
-}
-
-.TimePick_POPUP.position-top {
-    margin-left: -73px;
-    margin-top: -114px;
-}
-
-.TimePick_POPUP.position-left {
-    margin-left: -174px;
-    margin-top: -34px;
-}
-
-.TimePick_POPUP.position-right {
-    margin-left: 28px;
-    margin-top: -34px;
-}
-
 svg {
-    stroke: var(--bs-gray-500);
-}
-
-svg:hover {
-    stroke: var(--bs-emphasis-color);
-}
-
-.svg-arrow {
-    height: var(--bs-popup-font-size);
-    stroke: var(--bs-secondary-text-emphasis);
+    stroke: var(--bs-primary);
 }
 
 .label {
-    font-size: var(--bs-popup-font-size);
+    font-size: 20px;
 }
 
 .hour,
@@ -163,10 +126,4 @@ svg:hover {
     display: flex;
     flex-direction: column;
     width: 35px;
-    margin: 5px 0;
-}
-
-.invalid {
-    color: var(--bs-danger);
-    text-decoration: line-through;
 }
