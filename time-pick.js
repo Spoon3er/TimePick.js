@@ -107,13 +107,15 @@ var TimePick = (function () {
 
         let btn = document.querySelector(`[TimePick="input-${instance.id}"] + .TimePick_BTN .TimePick_ICON`);
         if (btn) {
-            btn.onclick = (e) => {
-                btn.classList.toggle("active");
+            btn.addEventListener('click', () => {
                 let popup = document.getElementById("popup_" + instance.id);
-                popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+                requestAnimationFrame(() => {
+                    popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+                    btn.classList.add("active");
+                });
                 if (config.autohide) addOverlayListener(popup, btn);
                 handleTimeUpdate();
-            };
+            });
         }
 
 
@@ -187,15 +189,19 @@ var TimePick = (function () {
 
         // Hide TimePick_POPUP on outside click
         function addOverlayListener(popup, btn) {
+            console.log('addOverlayListener', popup);
             if (popup.hasAttribute('overlayDissmiss')) return;
             popup.setAttribute('overlayDissmiss', true);
 
             document.addEventListener('click', function (e) {
+                if (!popup || !document.contains(popup)) return;
                 if (popup?.style.display !== "flex") return;
                 if (popup.contains(e.target) || btn.id === e.target.id) return;
 
-                popup.style.display = "none";
-                btn.classList.remove("active");
+                requestAnimationFrame(() => {
+                    popup.style.display = "none";
+                    btn.classList.remove("active");
+                });
             });
         }
 
